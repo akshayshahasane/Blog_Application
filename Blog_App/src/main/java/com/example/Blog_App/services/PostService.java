@@ -15,7 +15,7 @@ public interface PostService {
 
     //update
 
-    Post updatePost(PostDto postDto, Integer postId);
+    PostDto updatePost(PostDto postDto, Integer postId);
 
     //delete
 
@@ -23,19 +23,19 @@ public interface PostService {
 
     //get all post
 
-    List<Post> getAllPosts();
+    List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize);
 
     //get single post
 
-    Post getPostById(Integer postId);
+    PostDto getPostById(Integer postId);
 
     // get all post by category
 
-    List<Post> getPostsByCategory(Category categoryId);
+    List<PostDto> getPostsByCategory(Integer categoryId);
 
     //get all post by user
 
-    List<Post> getPostsByUser(User userId);
+    List<PostDto> getPostsByUser(Integer userId);
 
     //search posts
 
