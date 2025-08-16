@@ -1,6 +1,7 @@
 package com.example.Blog_App.serviceimpl;
 
 import com.example.Blog_App.dtos.PostDto;
+import com.example.Blog_App.dtos.PostResponse;
 import com.example.Blog_App.entities.Category;
 import com.example.Blog_App.entities.Post;
 import com.example.Blog_App.entities.User;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -76,9 +78,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize) {
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
 
-        Pageable p = PageRequest.of(pageNumber, pageSize);
+        Sort sort = null;
+        if (sortDir.equalsIgnoreCase("asc")) {
+            sort=Sort.by(sortBy).ascending();
+        }
+        else {
+            sort=Sort.by(sortBy).descending();
+        }
+
+        Pageable p = PageRequest.of(pageNumber, pageSize, sort);
 
         Page<Post> pagePost = this.postRepository.findAll(p);
 
@@ -87,7 +97,14 @@ public class PostServiceImpl implements PostService {
         List<PostDto> postDtos = allposts.stream().map(post -> this.modelMapper
                 .map(post, PostDto.class)).collect(Collectors.toList());
 
-        return postDtos;
+        PostResponse postResponse = new PostResponse();
+
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(pagePost.getNumber());
+        postResponse.setPageSize(pagePost.getSize());
+        postResponse.setTotalElements(pagePost.getTotalElements());
+
+        return postResponse;
     }
 
     @Override
@@ -125,7 +142,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> searchPosts(String keyword) {
-        return List.of();
+    public List<PostDto> searchPosts(String keyword) {
+        List<Post> posts = this.postRepository.findByTitleContaining(keyword);
+        List<PostDto> postDto = posts.stream().map((post -> this.modelMapper.map(post, PostDto.class)))
+                .collect(Collectors.toList());
+        return postDto;
     }
 }

@@ -1,9 +1,7 @@
 package com.example.Blog_App.services;
 
 import com.example.Blog_App.dtos.PostDto;
-import com.example.Blog_App.entities.Category;
-import com.example.Blog_App.entities.Post;
-import com.example.Blog_App.entities.User;
+import com.example.Blog_App.dtos.PostResponse;
 
 import java.util.List;
 
@@ -23,7 +21,7 @@ public interface PostService {
 
     //get all post
 
-    List<PostDto> getAllPosts(Integer pageNumber, Integer pageSize);
+    PostResponse getAllPosts(Integer pageNumber, Integer pageSize,String sortBy,String sortDir);
 
     //get single post
 
@@ -39,5 +37,5 @@ public interface PostService {
 
     //search posts
 
-    List<Post> searchPosts(String keyword);
+    List<PostDto> searchPosts(String keyword);
 }
